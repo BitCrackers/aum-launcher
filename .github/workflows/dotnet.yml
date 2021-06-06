@@ -1,0 +1,73 @@
+name: BuildAndRelease
+
+on:
+  push:
+    tags: 
+      - v[0-9].[0-9]+.[0-9]+*
+  # pr's will trigger this action. i think the idea here is to verify that a build is passing before merging.
+  pull_request:
+    branches: 
+      - main
+
+jobs:
+  Build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: setup-msbuild
+      uses: microsoft/setup-msbuild@v1
+    
+    - name: Setup NuGet.exe for use with actions
+      uses: NuGet/setup-nuget@v1.0.5
+      
+    - name: Restore NuGet Packages
+      run: nuget restore SimpleFrameworkApp.sln
+      
+    - name: Build
+      run: msbuild aum-launcher.sln /p:Configuration=Release
+    
+    - name: Upload Release Artifact
+      if: ${{ github.event_name == 'push' }}
+      uses: actions/upload-artifact@v2.2.3
+      with:
+        name: Release
+        path: Release/AUMLauncher*.exe
+      
+  AutoRelease:
+    if: ${{ github.event_name == 'push' }}
+    runs-on: windows-latest
+    needs: [Build]
+    steps:
+    - name: Parse tag semver
+      uses: booxmedialtd/ws-action-parse-semver@3576f3a20a39f8752fe0d8195f5ed384090285dc
+      id: semver_parser
+      with:
+        input_string: ${{ github.ref }}
+        version_extractor_regex: '\/v(.*)$'
+
+    # please keep this for an adjustment period, will help diagnose any issues
+    - name: Debug semver
+      run: |
+          echo 'major: ${{ steps.semver_parser.outputs.major }}'
+          echo 'minor: ${{ steps.semver_parser.outputs.minor }}'
+          echo 'patch: ${{ steps.semver_parser.outputs.patch }}'
+          echo 'feature (is pre-release?): ${{ steps.semver_parser.outputs.prerelease }}'
+          echo 'feature ver: ${{ steps.semver_parser.outputs.build }}'
+          echo 'full: ${{ steps.semver_parser.outputs.fullversion }}'
+          echo 'is pre-release: ${{ steps.semver_parser.outputs.prerelease != 0 }}'
+
+    - name: Download Release Artifact
+      uses: actions/download-artifact@v2.0.9
+      with:
+        name: Release
+        
+    - name: Automatic Releases
+      if: ${{ github.event_name == 'push' }}
+      uses: marvinpinto/action-automatic-releases@526ce12c6675bbe6e0e9a4169c90d09a3f7ad3e2
+      id: "automatic_releases"
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        prerelease: ${{ steps.semver_parser.outputs.prerelease != 0 }}
+        files: |
+          Release/AUMLauncher*.exe
