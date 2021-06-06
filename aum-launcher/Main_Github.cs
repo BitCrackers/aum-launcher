@@ -120,6 +120,7 @@ namespace aum_launcher
                         // change this to asset.Url once auto-updating is implemented
                         curReleaseInfo.LauncherExe_DownloadURL = asset.BrowserDownloadUrl;
                         // parse launcher semver, preliminary check if it's greater than current
+						// assumes launcher is named AUMLauncher-1.0.0.exe
                         string assetSemverStr = asset.Name.Remove(0, 12);
                         assetSemverStr = assetSemverStr.Substring(0, assetSemverStr.LastIndexOf('.'));
                         SemVersion assetSemver = null;
