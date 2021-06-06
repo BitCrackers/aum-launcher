@@ -22,7 +22,7 @@ jobs:
       uses: NuGet/setup-nuget@v1.0.5
       
     - name: Restore NuGet Packages
-      run: nuget restore SimpleFrameworkApp.sln
+      run: nuget restore aum-launcher.sln
       
     - name: Build
       run: msbuild aum-launcher.sln /p:Configuration=Release
