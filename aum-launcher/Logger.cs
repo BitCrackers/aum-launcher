@@ -9,7 +9,7 @@ namespace aum_launcher
 {
     public class Logger
     {
-        const string LOG_FILENAME = "AUMLauncher_log.txt";
+        const string LOG_FILENAME = Main.LAUNCHER_NAME + "_log.txt";
 
         public static readonly Logger Log = new Logger();
         static readonly System.Globalization.CultureInfo DateTimeCultureInfo_German = System.Globalization.CultureInfo.CreateSpecificCulture("de-DE");
@@ -25,11 +25,18 @@ namespace aum_launcher
 
         // TO-DO:
         // * Is StreamWriter thread-safe?
-        StreamWriter myLog;
+        StreamWriter logWriter;
 
         Logger()
         {
-            myLog = new StreamWriter(LOG_FILENAME, false) { AutoFlush = true };
+            try
+            {
+                logWriter = new StreamWriter(LOG_FILENAME, true) { AutoFlush = true };
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show("Could not initialize Logger: " + ex.Message + "\n\n" + ex.StackTrace);
+            }
         }
 
         // NOTE:
@@ -37,8 +44,16 @@ namespace aum_launcher
         // but i guess the underlying file handle counts as an unmanaged resource, right?
         ~Logger()
         {
-            myLog.Flush();
-            myLog.Close();
+            Close();
+        }
+
+        public void Close()
+        {
+            if (logWriter != null)
+            {
+                logWriter.Flush();
+                logWriter.Close();
+            }
         }
 
         /*
@@ -51,12 +66,15 @@ namespace aum_launcher
         public void Write(string logString, ELogType type, System.Windows.Forms.RichTextBox rtxtLog = null, bool shouldForceFlush = false)
         {
             logString = "[" + DateTime.Now.ToString("G", DateTimeCultureInfo_German) + "]: " + logString + "\n";
-            if (myLog.BaseStream.CanWrite)
+            if (logWriter != null)
             {
-                myLog.WriteLine(logString);
+                if (logWriter.BaseStream.CanWrite)
+                {
+                    logWriter.WriteLine(logString);
+                }
+                if (shouldForceFlush)
+                    logWriter.Flush();
             }
-            if (shouldForceFlush)
-                myLog.Flush();
 
             if (rtxtLog != null)
             {

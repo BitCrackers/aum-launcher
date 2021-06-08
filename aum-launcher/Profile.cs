@@ -14,11 +14,6 @@ namespace aum_launcher
         public SemVersion LocalTaggedSemVer = "0.0.0";
         public bool UseProxyVersion = false;
         public bool UseDebugBuild = false;
-        // NOTE:
-        // TO-DO:
-        // checked at program startup to set ActiveProfile to last session's ActiveProfile
-        // this is probably the worst way of doing this
-        public bool WasActiveProfileLastSession = false;
 
         public Profile() { }
 
@@ -46,11 +41,10 @@ namespace aum_launcher
                 writer.Write(LocalTaggedSemVer.ToString());
                 writer.Write(UseProxyVersion);
                 writer.Write(UseDebugBuild);
-                writer.Write(WasActiveProfileLastSession);
             }
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show("Error: could not serialize Profile\n" + ex.Message + "\n\n" + ex.StackTrace);
+                System.Windows.Forms.MessageBox.Show("Error: could not serialize Profile\n" + ex.Message + "\n\n" + ex.StackTrace, Main.MESSAGEBOX_CAPTION, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
                 return false;
             }
             return modsSuccessfullySerialized;
@@ -64,7 +58,6 @@ namespace aum_launcher
                 string parsedSemver = reader.ReadString();
                 UseProxyVersion = reader.ReadBoolean();
                 UseDebugBuild = reader.ReadBoolean();
-                WasActiveProfileLastSession = reader.ReadBoolean();
 
                 bool isValidSemver = SemVersion.TryParse(parsedSemver, out LocalTaggedSemVer);
                 if (!isValidSemver)
@@ -75,7 +68,7 @@ namespace aum_launcher
             }
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show("Error: could not deserialize Profile\n" + ex.Message + "\n\n" + ex.StackTrace);
+                System.Windows.Forms.MessageBox.Show("Error: could not deserialize Profile\n" + ex.Message + "\n\n" + ex.StackTrace, Main.MESSAGEBOX_CAPTION, System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
                 return false;
             }
             return true;

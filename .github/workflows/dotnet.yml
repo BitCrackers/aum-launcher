@@ -26,13 +26,18 @@ jobs:
       
     - name: Build
       run: msbuild aum-launcher.sln /p:Configuration=Release
+	  
+	- name: Package Build
+        if: ${{ github.event_name == 'push' }}
+        shell: cmd
+        run: tar -caf Release.zip -C Release *
     
     - name: Upload Release Artifact
       if: ${{ github.event_name == 'push' }}
       uses: actions/upload-artifact@v2.2.3
       with:
         name: Release
-        path: Release/AUMLauncher*.exe
+        path: Release.zip
       
   AutoRelease:
     if: ${{ github.event_name == 'push' }}
@@ -69,5 +74,4 @@ jobs:
       with:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
         prerelease: ${{ steps.semver_parser.outputs.prerelease != 0 }}
-        files: |
-          Release/AUMLauncher*.exe
+        files: Release.zip
