@@ -61,6 +61,11 @@ jobs:
       uses: actions/download-artifact@v2.0.9
       with:
         name: Release
+        path: Release
+    
+    - name: Package Release
+      shell: cmd
+      run: tar -caf Release.zip -C Release *
         
     - name: Automatic Releases
       if: ${{ github.event_name == 'push' }}
