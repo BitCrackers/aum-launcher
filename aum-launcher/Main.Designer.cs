@@ -30,6 +30,7 @@ namespace aum_launcher
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.MenuStrip_Main = new System.Windows.Forms.MenuStrip();
             this.Menu_MenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuAbout_MenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -363,6 +364,7 @@ namespace aum_launcher
             this.Controls.Add(this.pictureBoxProcessIcon);
             this.Controls.Add(this.MenuStrip_Main);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.MenuStrip_Main;
             this.MaximizeBox = false;
             this.Name = "Main";

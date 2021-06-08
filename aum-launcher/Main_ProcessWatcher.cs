@@ -43,6 +43,7 @@ namespace aum_launcher
             SelectedProcess.PID = SelectedProcess.ActiveProcess.Id;
             lblProcessDetails.ForeColor = System.Drawing.Color.Black;
             lblProcessDetails.Text = "Process: " + SelectedProcess.ActiveProcess.ProcessName + "(PID: " + SelectedProcess.PID.ToString() + ")";
+            btnInject.Enabled = !ActiveProfile.UseProxyVersion;
 
             Logger.Log.Write("ProcessWatcher found game process '" + SelectedProcess.ActiveProcess.ProcessName + "' with PID " + SelectedProcess.PID.ToString(), Logger.ELogType.Info, rtxtLog);
 
@@ -67,7 +68,8 @@ namespace aum_launcher
             lblProcessDetails.Text = "Waiting for game...";
             Logger.Log.Write("ProcessWatcher lost game process, beginning search again...", Logger.ELogType.Notification, rtxtLog);
             StatusLbl_Injection.ForeColor = System.Drawing.Color.DarkOrange;
-            StatusLbl_Injection.Text = "waiting...";
+            StatusLbl_Injection.Text = "Injection: waiting...";
+            btnInject.Enabled = false;
             // check if background worker is busy. if not, give it its task
             // if it is busy, welllll.... why would it be busy?
             if (ProcessPollWorker.IsBusy)

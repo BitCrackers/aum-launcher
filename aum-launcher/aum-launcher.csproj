@@ -112,5 +112,8 @@
   <ItemGroup>
     <None Include="Resources\org-logo.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BitCrackersIcon.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

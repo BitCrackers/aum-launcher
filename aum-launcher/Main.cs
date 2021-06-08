@@ -34,7 +34,7 @@ namespace aum_launcher
 
     public partial class Main : Form
     {
-        public const string LAUNCHER_VERSION = "1.0.3";
+        public const string LAUNCHER_VERSION = "1.0.4";
         public const string LAUNCHER_NAME = "aum-launcher";
         // begin update info
         public const string LAUNCHER_DELETION_DIR = "AUMLAUNCHER_DELETE";
@@ -231,12 +231,13 @@ namespace aum_launcher
 
             Logger.Log.Write("Current process directory: " + System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName, Logger.ELogType.Info, rtxtLog, true);
 
-            if (CheckForOldLaunchers()) return;
             InitializeProfileSystem();
+            if (CheckForOldLaunchers()) return;
+            
             GameDirWorker.RunWorkerAsync(ActiveProfile);
 
             // start github worker (first task is to fetch all releases and parse version tags)
-            //InitializeGithubClient();
+            InitializeGithubClient();
         }
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
@@ -257,6 +258,10 @@ namespace aum_launcher
             lblCurrentBuild.Text = "Currently using: (" + (ActiveProfile.UseDebugBuild ? "Debug " : "Release ") + (ActiveProfile.UseProxyVersion ? "Proxy" : "Injectable") + ")";
             btnSwitchToProxy.Enabled = !ActiveProfile.UseProxyVersion;
             btnSwitchToInjectable.Enabled = ActiveProfile.UseProxyVersion;
+            if (ActiveProfile.UseProxyVersion)
+                btnInject.Enabled = false;
+            else
+                btnInject.Enabled = SelectedProcess != null && SelectedProcess.ActiveProcess != null;
         }
 
         private void MenuAbout_MenuItem_Click(object sender, EventArgs e)
@@ -453,7 +458,7 @@ namespace aum_launcher
             {
                 Logger.Log.Write("Could not find version.dll in game directory '" + ActiveProfile.GameDirPath + MOD_VERSION_FILENAME + "'", Logger.ELogType.Info, rtxtLog);
             }
-            btnInject.Enabled = true;
+            btnInject.Enabled = SelectedProcess != null && SelectedProcess.ActiveProcess != null;
             lblCurrentBuild.Text = "Currently using: (" + (ActiveProfile.UseDebugBuild ? "Debug " : "Release ") + (ActiveProfile.UseProxyVersion ? "Proxy" : "Injectable") + ")";
         }
 
@@ -479,7 +484,7 @@ namespace aum_launcher
             Injector.Inject(SelectedProcess.ActiveProcess, pathToDll, rtxtLog);
             Logger.Log.Write("Successfully injected!", Logger.ELogType.Notification, rtxtLog, true);
             StatusLbl_Injection.ForeColor = System.Drawing.Color.LimeGreen;
-            StatusLbl_Injection.Text = "Success!";
+            StatusLbl_Injection.Text = "Injection: Success!";
         }
 
         private void chboxUseDebugBuild_CheckedChanged(object sender, EventArgs e)

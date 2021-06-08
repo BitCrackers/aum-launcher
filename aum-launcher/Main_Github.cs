@@ -244,7 +244,7 @@ namespace aum_launcher
                     lblLauncherVersion.Text = "Launcher Version: " + LAUNCHER_VERSION;
                     StatusLbl_Launcher.ForeColor = System.Drawing.Color.LimeGreen;
                     StatusLbl_Launcher.Text = "Launcher: OK";
-                    btnUpdateLauncher.Enabled = true;
+                    btnUpdateLauncher.Enabled = false;
                 }
             }
         }
