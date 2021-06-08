@@ -145,7 +145,7 @@ namespace aum_launcher
                     Logger.Log.Write("--Saw asset: " + asset.Name + "\n" + asset.BrowserDownloadUrl, Logger.ELogType.Info, rtxtLog);
                     // WARNING:
                     // makes assumptions about asset names
-                    if (asset.Name.StartsWith(LAUNCHER_NAME))
+                    if (asset.Name.StartsWith("aum-launcher"))
                         curReleaseInfo.LauncherExe_DownloadURL = asset.Url;
                     else if (asset.Name.StartsWith("Release"))
                         curReleaseInfo.ReleaseZip_DownloadURL = asset.Url;
