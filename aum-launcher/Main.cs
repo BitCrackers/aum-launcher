@@ -34,7 +34,7 @@ namespace aum_launcher
 
     public partial class Main : Form
     {
-        public const string LAUNCHER_VERSION = "1.0.1";
+        public const string LAUNCHER_VERSION = "1.0.3";
         public const string LAUNCHER_NAME = "aum-launcher";
         // begin update info
         public const string LAUNCHER_DELETION_DIR = "AUMLAUNCHER_DELETE";
