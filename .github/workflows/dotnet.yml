@@ -65,7 +65,7 @@ jobs:
     
     - name: Package Release
       shell: cmd
-      run: tar -caf Release.zip -C Release *
+      run: tar -caf aum-launcher.zip -C Release *
         
     - name: Automatic Releases
       if: ${{ github.event_name == 'push' }}
@@ -74,4 +74,4 @@ jobs:
       with:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
         prerelease: ${{ steps.semver_parser.outputs.prerelease != 0 }}
-        files: Release.zip
+        files: aum-launcher.zip
