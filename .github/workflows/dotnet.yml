@@ -58,7 +58,7 @@ jobs:
           echo 'is pre-release: ${{ steps.semver_parser.outputs.prerelease != 0 }}'
 
     - name: Download Release Artifact
-      uses: actions/download-artifact@v2.0.9
+      uses: actions/download-artifact@v4.1.7
       with:
         name: Release
         path: Release
